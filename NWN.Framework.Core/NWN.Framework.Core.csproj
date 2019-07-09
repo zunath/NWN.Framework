@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DEE7B3F7-C0E2-4157-840A-F73B39632195}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NWN.Framework.Core</RootNamespace>
+    <AssemblyName>NWN.Framework.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="Event\Area\area_on_enter.cs" />
+    <Compile Include="Event\Area\area_on_exit.cs" />
+    <Compile Include="Event\Area\area_on_hb.cs" />
+    <Compile Include="Event\Area\area_on_user.cs" />
+    <Compile Include="Event\Area\OnAreaEnter.cs" />
+    <Compile Include="Event\Area\OnAreaExit.cs" />
+    <Compile Include="Event\Area\OnAreaHeartbeat.cs" />
+    <Compile Include="Event\Area\OnAreaUserDefined.cs" />
+    <Compile Include="Event\Creature\crea_on_attacked.cs" />
+    <Compile Include="Event\Creature\crea_on_blocked.cs" />
+    <Compile Include="Event\Creature\crea_on_convo.cs" />
+    <Compile Include="Event\Creature\crea_on_damaged.cs" />
+    <Compile Include="Event\Creature\crea_on_death.cs" />
+    <Compile Include="Event\Creature\crea_on_disturb.cs" />
+    <Compile Include="Event\Creature\crea_on_hb.cs" />
+    <Compile Include="Event\Creature\crea_on_percept.cs" />
+    <Compile Include="Event\Creature\crea_on_rested.cs" />
+    <Compile Include="Event\Creature\crea_on_roundend.cs" />
+    <Compile Include="Event\Creature\crea_on_spawn.cs" />
+    <Compile Include="Event\Creature\crea_on_splcast.cs" />
+    <Compile Include="Event\Creature\crea_on_userdef.cs" />
+    <Compile Include="Event\Creature\OnCreatureBlocked.cs" />
+    <Compile Include="Event\Creature\OnCreatureCombatRoundEnd.cs" />
+    <Compile Include="Event\Creature\OnCreatureConversation.cs" />
+    <Compile Include="Event\Creature\OnCreatureDamaged.cs" />
+    <Compile Include="Event\Creature\OnCreatureDeath.cs" />
+    <Compile Include="Event\Creature\OnCreatureDisturbed.cs" />
+    <Compile Include="Event\Creature\OnCreatureHeartbeat.cs" />
+    <Compile Include="Event\Creature\OnCreaturePerception.cs" />
+    <Compile Include="Event\Creature\OnCreaturePhysicalAttacked.cs" />
+    <Compile Include="Event\Creature\OnCreatureRested.cs" />
+    <Compile Include="Event\Creature\OnCreatureSpawn.cs" />
+    <Compile Include="Event\Creature\OnCreatureSpellCastAt.cs" />
+    <Compile Include="Event\Creature\OnCreatureUserDefined.cs" />
+    <Compile Include="Event\Module\mod_on_acquire.cs" />
+    <Compile Include="Event\Module\mod_on_activate.cs" />
+    <Compile Include="Event\Module\mod_on_applydmg.cs" />
+    <Compile Include="Event\Module\mod_on_attack.cs" />
+    <Compile Include="Event\Module\mod_on_chat.cs" />
+    <Compile Include="Event\Module\mod_on_csabort.cs" />
+    <Compile Include="Event\Module\mod_on_death.cs" />
+    <Compile Include="Event\Module\mod_on_dying.cs" />
+    <Compile Include="Event\Module\mod_on_enter.cs" />
+    <Compile Include="Event\Module\mod_on_entstlth.cs" />
+    <Compile Include="Event\Module\mod_on_equip.cs" />
+    <Compile Include="Event\Module\mod_on_examine.cs" />
+    <Compile Include="Event\Module\mod_on_heartbeat.cs" />
+    <Compile Include="Event\Module\mod_on_leave.cs" />
+    <Compile Include="Event\Module\mod_on_levelup.cs" />
+    <Compile Include="Event\Module\mod_on_load.cs" />
+    <Compile Include="Event\Module\mod_on_nwnxchat.cs" />
+    <Compile Include="Event\Module\mod_on_respawn.cs" />
+    <Compile Include="Event\Module\mod_on_rest.cs" />
+    <Compile Include="Event\Module\mod_on_unacquire.cs" />
+    <Compile Include="Event\Module\mod_on_unequip.cs" />
+    <Compile Include="Event\Module\mod_on_usefeat.cs" />
+    <Compile Include="Event\Module\mod_on_user.cs" />
+    <Compile Include="Event\Module\OnModuleAcquireItem.cs" />
+    <Compile Include="Event\Module\OnModuleActivateItem.cs" />
+    <Compile Include="Event\Module\OnModuleApplyDamage.cs" />
+    <Compile Include="Event\Module\OnModuleAttack.cs" />
+    <Compile Include="Event\Module\OnModuleChat.cs" />
+    <Compile Include="Event\Module\OnModuleCutsceneAbort.cs" />
+    <Compile Include="Event\Module\OnModuleDeath.cs" />
+    <Compile Include="Event\Module\OnModuleDying.cs" />
+    <Compile Include="Event\Module\OnModuleEnter.cs" />
+    <Compile Include="Event\Module\OnModuleEnterStealthAfter.cs" />
+    <Compile Include="Event\Module\OnModuleEquipItem.cs" />
+    <Compile Include="Event\Module\OnModuleExamine.cs" />
+    <Compile Include="Event\Module\OnModuleHeartbeat.cs" />
+    <Compile Include="Event\Module\OnModuleLeave.cs" />
+    <Compile Include="Event\Module\OnModuleLevelUp.cs" />
+    <Compile Include="Event\Module\OnModuleLoad.cs" />
+    <Compile Include="Event\Module\OnModuleNWNXChat.cs" />
+    <Compile Include="Event\Module\OnModuleRespawn.cs" />
+    <Compile Include="Event\Module\OnModuleRest.cs" />
+    <Compile Include="Event\Module\OnModuleUnacquireItem.cs" />
+    <Compile Include="Event\Module\OnModuleUnequipItem.cs" />
+    <Compile Include="Event\Module\OnModuleUseFeat.cs" />
+    <Compile Include="Event\Module\OnModuleUserDefined.cs" />
+    <Compile Include="GameObject\NWArea.cs" />
+    <Compile Include="GameObject\NWCreature.cs" />
+    <Compile Include="GameObject\NWItem.cs" />
+    <Compile Include="GameObject\NWLocation.cs" />
+    <Compile Include="GameObject\NWModule.cs" />
+    <Compile Include="GameObject\NWObject.cs" />
+    <Compile Include="GameObject\NWPlaceable.cs" />
+    <Compile Include="GameObject\NWPlayer.cs" />
+    <Compile Include="Messaging\Contracts\IMessageHub.cs" />
+    <Compile Include="Messaging\MessageHub.cs" />
+    <Compile Include="Messaging\Subscription.cs" />
+    <Compile Include="Messaging\Subscriptions.cs" />
+    <Compile Include="NWNX\AdministrationOption.cs" />
+    <Compile Include="NWNX\AreaColorType.cs" />
+    <Compile Include="NWNX\AreaDayNightCycle.cs" />
+    <Compile Include="NWNX\AreaPVPSetting.cs" />
+    <Compile Include="NWNX\AreaWeatherChance.cs" />
+    <Compile Include="NWNX\AttackEventData.cs" />
+    <Compile Include="NWNX\ClericDomain.cs" />
+    <Compile Include="NWNX\CreatureBonusType.cs" />
+    <Compile Include="NWNX\CreatureMovementRate.cs" />
+    <Compile Include="NWNX\CreatureMovementType.cs" />
+    <Compile Include="NWNX\DamageData.cs" />
+    <Compile Include="NWNX\DamageEventData.cs" />
+    <Compile Include="NWNX\DevastatingCriticalData.cs" />
+    <Compile Include="NWNX\EffectUnpacked.cs" />
+    <Compile Include="NWNX\EventType.cs" />
+    <Compile Include="NWNX\ItemPropertyUnpacked.cs" />
+    <Compile Include="NWNX\LocalVariable.cs" />
+    <Compile Include="NWNX\LocalVariableType.cs" />
+    <Compile Include="NWNX\MemorizedSpellSlot.cs" />
+    <Compile Include="NWNX\NWNXAdmin.cs" />
+    <Compile Include="NWNX\NWNXArea.cs" />
+    <Compile Include="NWNX\NWNXChat.cs" />
+    <Compile Include="NWNX\NWNXCore.cs" />
+    <Compile Include="NWNX\NWNXCreature.cs" />
+    <Compile Include="NWNX\NWNXDamage.cs" />
+    <Compile Include="NWNX\NWNXEffect.cs" />
+    <Compile Include="NWNX\NWNXEvents.cs" />
+    <Compile Include="NWNX\NWNXItem.cs" />
+    <Compile Include="NWNX\NWNXItemProperty.cs" />
+    <Compile Include="NWNX\NWNXObject.cs" />
+    <Compile Include="NWNX\NWNXPlayer.cs" />
+    <Compile Include="NWNX\NWNXPlayerQuickBarSlot.cs" />
+    <Compile Include="NWNX\NWNXProfiler.cs" />
+    <Compile Include="NWNX\NWNXVisibility.cs" />
+    <Compile Include="NWNX\NWNXWeapon.cs" />
+    <Compile Include="NWNX\QuickBarSlot.cs" />
+    <Compile Include="NWNX\QuickBarSlotType.cs" />
+    <Compile Include="NWNX\SpecialAbilitySlot.cs" />
+    <Compile Include="NWNX\VisibilityType.cs" />
+    <Compile Include="NWScript\INTERNAL_Events.cs" />
+    <Compile Include="NWScript\INTERNAL_Internal.cs" />
+    <Compile Include="NWScript\INTERNAL_nwscript.cs" />
+    <Compile Include="NWScript\INTERNAL_Types.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

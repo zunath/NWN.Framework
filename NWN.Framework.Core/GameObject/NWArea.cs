@@ -1,0 +1,67 @@
+﻿using System.Collections.Generic;
+
+namespace NWN.Framework.Core.GameObject
+{
+    public class NWArea : NWObject
+    {
+        public NWArea(Object o) 
+            : base(o)
+        {
+            
+        }
+
+        public int Width => _.GetAreaSize(_.AREA_WIDTH, Object);
+
+        public int Height => _.GetAreaSize(_.AREA_HEIGHT, Object);
+
+        public bool IsInstance => _.GetLocalInt(Object, "IS_AREA_INSTANCE") == _.TRUE;
+
+        public IEnumerable<NWObject> Objects
+        {
+            get
+            {
+                for (NWObject obj = _.GetFirstObjectInArea(Object); obj.IsValid; obj = _.GetNextObjectInArea(Object))
+                {
+                    yield return obj;
+                }
+            }
+        }
+
+        //
+        // -- BELOW THIS POINT IS JUNK TO MAKE THE API FRIENDLIER!
+        //
+
+        public static bool operator ==(NWArea lhs, NWArea rhs)
+        {
+            bool lhsNull = lhs is null;
+            bool rhsNull = rhs is null;
+            return (lhsNull && rhsNull) || (!lhsNull && !rhsNull && lhs.Object == rhs.Object);
+        }
+
+        public static bool operator !=(NWArea lhs, NWArea rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        public override bool Equals(object o)
+        {
+            NWArea other = o as NWArea;
+            return other != null && other == this;
+        }
+
+        public override int GetHashCode()
+        {
+            return Object.GetHashCode();
+        }
+
+        public static implicit operator Object(NWArea o)
+        {
+            return o.Object;
+        }
+
+        public static implicit operator NWArea(Object o)
+        {
+            return new NWArea(o);
+        }
+    }
+}

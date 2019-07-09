@@ -1,4 +1,5 @@
-﻿using NWN.Framework.Core.Event.Module;
+﻿using NWN.Framework.Core.Event;
+using NWN.Framework.Core.Event.Module;
 using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.NWNX;
 
@@ -12,6 +13,9 @@ namespace NWN.Scripts
         // ReSharper disable once UnusedMember.Local
         private static void Main()
         {
+            // Register
+            EventSubscriptions.Subscribe();
+
             SetModuleEventScripts();
             SetAreaEventScripts();
             // Bioware default

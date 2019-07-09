@@ -1,6 +1,6 @@
 ﻿namespace NWN.Framework.Core.Event.Module
 {
-    internal class OnModuleHeartbeat
+    public class OnModuleHeartbeat
     {
     }
 }

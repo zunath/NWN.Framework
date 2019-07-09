@@ -1,6 +1,6 @@
 ﻿namespace NWN.Framework.Core.Event.Module
 {
-    internal class OnModuleRest
+    public class OnModuleRest
     {
     }
 }

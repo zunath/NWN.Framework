@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Event\Area\area_on_enter.cs" />
     <Compile Include="Event\Area\area_on_exit.cs" />
     <Compile Include="Event\Area\area_on_hb.cs" />
@@ -76,6 +75,7 @@
     <Compile Include="Event\Creature\OnCreatureSpawn.cs" />
     <Compile Include="Event\Creature\OnCreatureSpellCastAt.cs" />
     <Compile Include="Event\Creature\OnCreatureUserDefined.cs" />
+    <Compile Include="Event\EventSubscriptions.cs" />
     <Compile Include="Event\Module\mod_on_acquire.cs" />
     <Compile Include="Event\Module\mod_on_activate.cs" />
     <Compile Include="Event\Module\mod_on_applydmg.cs" />
@@ -130,7 +130,7 @@
     <Compile Include="GameObject\NWObject.cs" />
     <Compile Include="GameObject\NWPlaceable.cs" />
     <Compile Include="GameObject\NWPlayer.cs" />
-    <Compile Include="Messaging\Contracts\IMessageHub.cs" />
+    <Compile Include="Messaging\IMessageHub.cs" />
     <Compile Include="Messaging\MessageHub.cs" />
     <Compile Include="Messaging\Subscription.cs" />
     <Compile Include="Messaging\Subscriptions.cs" />
@@ -177,6 +177,10 @@
     <Compile Include="NWScript\INTERNAL_Internal.cs" />
     <Compile Include="NWScript\INTERNAL_nwscript.cs" />
     <Compile Include="NWScript\INTERNAL_Types.cs" />
+    <Compile Include="Plugin\IPlugin.cs" />
+    <Compile Include="Plugin\OnPluginLoaded.cs" />
+    <Compile Include="Plugin\OnPluginUnloaded.cs" />
+    <Compile Include="Plugin\PluginLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

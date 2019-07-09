@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using NWN.Framework.Core.Messaging.Contracts;
 
 namespace NWN.Framework.Core.Messaging
 {

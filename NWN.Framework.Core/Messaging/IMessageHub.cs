@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NWN.Framework.Core.Messaging.Contracts
+namespace NWN.Framework.Core.Messaging
 {
     /// <summary>
     /// An implementation of the <c>Event Aggregator</c> pattern.

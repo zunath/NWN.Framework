@@ -12,7 +12,19 @@ namespace SWLOR.Game.Core
 {
     internal static class PluginLoader
     {
-        private static readonly Dictionary<string, AppDomain> _pluginAppDomains = new Dictionary<string, AppDomain>();
+        private class PluginRegistration
+        {
+            public AppDomain AppDomain { get; }
+            public IPlugin Registration { get; }
+
+            public PluginRegistration(AppDomain appDomain, IPlugin registration)
+            {
+                AppDomain = appDomain;
+                Registration = registration;
+            }
+        }
+
+        private static readonly Dictionary<string, PluginRegistration> _pluginAppDomains = new Dictionary<string, PluginRegistration>();
         private static FileSystemWatcher _watcher;
 
         // ReSharper disable once UnusedMember.Local
@@ -51,8 +63,24 @@ namespace SWLOR.Game.Core
 
         private static void StartFileWatcher(string directory)
         {
+            // Per this post: https://stackoverflow.com/questions/31235034/filesystemwatcher-not-responding-to-file-events-in-folder-shared-by-virtual-mach
+            // We have to use a polling configuration or else the file watcher won't pick up file changes.
+            Environment.SetEnvironmentVariable("MONO_MANAGED_WATCHER", "1");
+
             Console.WriteLine("Watching directory: " + directory + " for plugin changes.");
-            _watcher = new FileSystemWatcher(directory);
+            _watcher = new FileSystemWatcher
+            { 
+                Path = directory,
+                Filter = "*.dll",
+                NotifyFilter = NotifyFilters.Attributes |
+                               NotifyFilters.CreationTime |
+                               NotifyFilters.FileName |
+                               NotifyFilters.LastAccess |
+                               NotifyFilters.LastWrite |
+                               NotifyFilters.Size |
+                               NotifyFilters.Security
+            };
+
             _watcher.Changed += (sender, args) =>
             {
                 UnloadPlugin(args.FullPath);
@@ -64,6 +92,10 @@ namespace SWLOR.Game.Core
             {
                 UnloadPlugin(args.OldFullPath);
                 LoadPlugin(args.FullPath);
+            };
+            _watcher.Error += (sender, args) =>
+            {
+                Console.WriteLine("ERROR: " + args.GetException().Message);
             };
 
             _watcher.EnableRaisingEvents = true;
@@ -77,12 +109,13 @@ namespace SWLOR.Game.Core
             // Create an app domain.
             AppDomain domain = AppDomain.CreateDomain(fileName);
             // Run the plugin-specific registration code.
-            IPlugin plugin = GetPlugin(dllPath);
-            plugin.Register();
+            IPlugin registration = GetPlugin(dllPath);
+            registration.Register();
 
             // Store the app domain in the dictionary. If the plugin file ever changes, 
             // we'll use this dictionary to reload it.
-            _pluginAppDomains.Add(dllPath, domain);
+            var pluginRegistration = new PluginRegistration(domain, registration);
+            _pluginAppDomains.Add(dllPath, pluginRegistration);
 
             MessageHub.Instance.Publish(new OnPluginLoaded(dllPath));
         }
@@ -103,11 +136,9 @@ namespace SWLOR.Game.Core
         {
             string fileName = Path.GetFileName(dllPath);
             Console.WriteLine("Unloading plugin: " + fileName);
-            var pluginDomain = _pluginAppDomains[dllPath];
-            IPlugin plugin = GetPlugin(dllPath);
-            plugin.Unregister();
-            AppDomain.Unload(pluginDomain);
-
+            var pluginRegistration = _pluginAppDomains[dllPath];
+            pluginRegistration.Registration.Unregister();
+            AppDomain.Unload(pluginRegistration.AppDomain);
             MessageHub.Instance.Publish(new OnPluginUnloaded(dllPath));
         }
 

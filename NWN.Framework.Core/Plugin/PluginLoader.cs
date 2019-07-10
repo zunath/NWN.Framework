@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
+using NWN.Framework.Core.Event.Module;
 using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.Plugin;
 using NWN.Scripts;
@@ -10,7 +12,7 @@ using NWN.Scripts;
 // ReSharper disable once CheckNamespace
 namespace SWLOR.Game.Core
 {
-    internal static class PluginLoader
+    public class PluginLoader: MarshalByRefObject
     {
         private class PluginRegistration
         {
@@ -24,15 +26,14 @@ namespace SWLOR.Game.Core
             }
         }
 
-        private static readonly Dictionary<string, PluginRegistration> _pluginAppDomains = new Dictionary<string, PluginRegistration>();
-        private static FileSystemWatcher _watcher;
+        private readonly Dictionary<string, PluginRegistration> _pluginAppDomains = new Dictionary<string, PluginRegistration>();
+        private FileSystemWatcher _watcher;
 
-        // ReSharper disable once UnusedMember.Local
-        public static void Start()
+        public void Start()
         {
             Console.WriteLine("Plugin loader has started.");
 
-            string fullPath = typeof(mod_on_load).Assembly.Location;
+            string fullPath = typeof(PluginLoader).Assembly.Location;
             string directory = Path.GetDirectoryName(fullPath);
 
             if (directory == null)
@@ -49,19 +50,14 @@ namespace SWLOR.Game.Core
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Failed to load plugin: " + Path.GetFileName(plugin) + ". Error: " + ex.Message);
-
-                    if (ex.InnerException != null)
-                    {
-                        Console.WriteLine(ex.InnerException.Message);
-                    }
+                    Console.WriteLine("Failed to load plugin: " + Path.GetFileName(plugin) + ". Error: " + ex);
                 }
             }
 
             StartFileWatcher(directory);
         }
 
-        private static void StartFileWatcher(string directory)
+        private void StartFileWatcher(string directory)
         {
             // Per this post: https://stackoverflow.com/questions/31235034/filesystemwatcher-not-responding-to-file-events-in-folder-shared-by-virtual-mach
             // We have to use a polling configuration or else the file watcher won't pick up file changes.
@@ -101,44 +97,50 @@ namespace SWLOR.Game.Core
             _watcher.EnableRaisingEvents = true;
         }
 
-        private static void LoadPlugin(string dllPath)
+        private void LoadPlugin(string dllPath)
         {
             string fileName = Path.GetFileName(dllPath);
+            var assemblyName = AssemblyName.GetAssemblyName(dllPath);
             Console.WriteLine("Loading plugin: " + fileName);
 
-            // Create an app domain.
-            AppDomain domain = AppDomain.CreateDomain(fileName);
-            // Run the plugin-specific registration code.
-            IPlugin registration = GetPlugin(dllPath);
-            registration.Register();
+            string monoAssemblyPath = Environment.GetEnvironmentVariable("NWNX_MONO_ASSEMBLY");
+            AppDomain domain;
 
+            // There won't be a mono assembly if the testing app is being run. Use whatever runs by default on Windows.
+            if (string.IsNullOrWhiteSpace(monoAssemblyPath))
+            {
+                domain = AppDomain.CreateDomain(fileName);
+            }
+            // But on the game server we'll be running mono. Use the NWNX environment variable for Linux.
+            else
+            {
+                domain = AppDomain.CreateDomain(fileName, null, new AppDomainSetup
+                {
+                    ApplicationBase = Path.GetDirectoryName(monoAssemblyPath)
+                });
+            }
+
+            IPlugin plugin = (IPlugin) domain.CreateInstanceAndUnwrap(assemblyName.FullName, assemblyName.Name + ".PluginRegistration");
+            plugin.Register();
+
+            plugin.SubscribeEvents(MessageHub.Instance);
             // Store the app domain in the dictionary. If the plugin file ever changes, 
             // we'll use this dictionary to reload it.
-            var pluginRegistration = new PluginRegistration(domain, registration);
+            var pluginRegistration = new PluginRegistration(domain, plugin);
             _pluginAppDomains.Add(dllPath, pluginRegistration);
 
             MessageHub.Instance.Publish(new OnPluginLoaded(dllPath));
         }
 
-        private static IPlugin GetPlugin(string dllPath)
-        {
-            Assembly assembly = Assembly.LoadFrom(dllPath);
-            // Get all of the types
-            Type[] types = assembly.GetTypes();
-
-            // Get the implementation of IPlugin and instantiate it.
-            Type pluginType = typeof(IPlugin);
-            Type pluginImplementation = types.First(x => pluginType.IsAssignableFrom(x));
-            return (IPlugin)Activator.CreateInstance(pluginImplementation);
-        }
-
-        private static void UnloadPlugin(string dllPath)
+        private void UnloadPlugin(string dllPath)
         {
             string fileName = Path.GetFileName(dllPath);
             Console.WriteLine("Unloading plugin: " + fileName);
             var pluginRegistration = _pluginAppDomains[dllPath];
             pluginRegistration.Registration.Unregister();
             AppDomain.Unload(pluginRegistration.AppDomain);
+            _pluginAppDomains.Remove(dllPath);
+
             MessageHub.Instance.Publish(new OnPluginUnloaded(dllPath));
         }
 

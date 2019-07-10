@@ -1,4 +1,5 @@
 ﻿using System;
+using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.Plugin;
 
 namespace NWN.Framework.Plugin.Logging
@@ -13,6 +14,10 @@ namespace NWN.Framework.Plugin.Logging
         public void Unregister()
         {
             Console.WriteLine("Unregistered logging plugin a new version");
+        }
+
+        public void SubscribeEvents(IMessageHub messageHub)
+        {
         }
     }
 }

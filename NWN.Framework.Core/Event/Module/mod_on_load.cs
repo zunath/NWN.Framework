@@ -2,6 +2,7 @@
 using NWN.Framework.Core.Event.Module;
 using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.NWNX;
+using SWLOR.Game.Core;
 
 // ReSharper disable once CheckNamespace
 namespace NWN.Scripts
@@ -10,11 +11,12 @@ namespace NWN.Scripts
     internal class mod_on_load
 #pragma warning restore IDE1006 // Naming Styles
     {
+        private static readonly PluginLoader _pluginLoader = new PluginLoader();
+
         // ReSharper disable once UnusedMember.Local
         private static void Main()
         {
-            // Register
-            EventSubscriptions.Subscribe();
+            _pluginLoader.Start();
 
             SetModuleEventScripts();
             SetAreaEventScripts();

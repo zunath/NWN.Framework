@@ -75,7 +75,6 @@
     <Compile Include="Event\Creature\OnCreatureSpawn.cs" />
     <Compile Include="Event\Creature\OnCreatureSpellCastAt.cs" />
     <Compile Include="Event\Creature\OnCreatureUserDefined.cs" />
-    <Compile Include="Event\EventSubscriptions.cs" />
     <Compile Include="Event\Module\mod_on_acquire.cs" />
     <Compile Include="Event\Module\mod_on_activate.cs" />
     <Compile Include="Event\Module\mod_on_applydmg.cs" />

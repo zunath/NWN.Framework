@@ -7,5 +7,6 @@ namespace NWN.Framework.Core.Plugin
         void Register();
         void Unregister();
         void SubscribeEvents(IMessageHub messageHub);
+        void UnsubscribeEvents(IMessageHub messageHub);
     }
 }

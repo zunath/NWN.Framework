@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace NWN.Framework.Core.Messaging
 {
-    internal sealed class Subscription
+    internal sealed class Subscription: MarshalByRefObject
     {
         private const long TicksMultiplier = 1000 * TimeSpan.TicksPerMillisecond;
         private readonly long _throttleByTicks;

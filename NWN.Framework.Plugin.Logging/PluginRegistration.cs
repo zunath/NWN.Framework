@@ -19,5 +19,9 @@ namespace NWN.Framework.Plugin.Logging
         public void SubscribeEvents(IMessageHub messageHub)
         {
         }
+
+        public void UnsubscribeEvents(IMessageHub messageHub)
+        {
+        }
     }
 }

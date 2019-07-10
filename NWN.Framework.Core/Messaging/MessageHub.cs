@@ -10,7 +10,7 @@ namespace NWN.Framework.Core.Messaging
     /// <summary>
     /// An implementation of the <c>Event Aggregator</c> pattern.
     /// </summary>
-    public sealed class MessageHub : IMessageHub
+    public sealed class MessageHub : MarshalByRefObject, IMessageHub
     {
         private readonly Subscriptions _subscriptions;
         private Action<Type, object> _globalHandler;

@@ -122,8 +122,8 @@ namespace SWLOR.Game.Core
 
             IPlugin plugin = (IPlugin) domain.CreateInstanceAndUnwrap(assemblyName.FullName, assemblyName.Name + ".PluginRegistration");
             plugin.Register();
-
             plugin.SubscribeEvents(MessageHub.Instance);
+
             // Store the app domain in the dictionary. If the plugin file ever changes, 
             // we'll use this dictionary to reload it.
             var pluginRegistration = new PluginRegistration(domain, plugin);
@@ -137,6 +137,7 @@ namespace SWLOR.Game.Core
             string fileName = Path.GetFileName(dllPath);
             Console.WriteLine("Unloading plugin: " + fileName);
             var pluginRegistration = _pluginAppDomains[dllPath];
+            pluginRegistration.Registration.UnsubscribeEvents(MessageHub.Instance);
             pluginRegistration.Registration.Unregister();
             AppDomain.Unload(pluginRegistration.AppDomain);
             _pluginAppDomains.Remove(dllPath);

@@ -7,7 +7,7 @@ using System.Threading;
 namespace NWN.Framework.Core.Messaging
 {
     [SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
-    internal class Subscriptions
+    internal class Subscriptions: MarshalByRefObject
     {
         private readonly List<Subscription> AllSubscriptions = new List<Subscription>();
         private int _subscriptionsChangeCounter;

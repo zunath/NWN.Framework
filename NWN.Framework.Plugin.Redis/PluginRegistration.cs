@@ -25,12 +25,29 @@ namespace NWN.Framework.Plugin.Redis
         {
             Console.WriteLine("running message hub");
 
-            _heartbeatEvent = messageHub.Subscribe<OnModuleHeartbeat>(msg => Run());
+            try
+            {
+                _heartbeatEvent = messageHub.Subscribe<OnModuleHeartbeat>(msg => Run());
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("subscribe exception: " + ex);
+            }
+
+            
+        }
+
+        public void UnsubscribeEvents(IMessageHub messageHub)
+        {
+            Console.WriteLine("Running unsubscribe");
+
+            messageHub.Unsubscribe(_heartbeatEvent);
         }
 
         private void Run()
         {
             Console.WriteLine("Getting files in Redis plugin");
+            Console.WriteLine("HALLELUJAH IT WORKS");
             //string[] files = Directory.GetFiles(Environment.CurrentDirectory);
 
 

@@ -1,6 +1,8 @@
-﻿namespace NWN.Framework.Core.Event.Module
+﻿using System;
+
+namespace NWN.Framework.Core.Event.Module
 {
-    public class OnModuleUserDefined
+    public class OnModuleUserDefined: MarshalByRefObject
     {
     }
 }

@@ -47,20 +47,13 @@ namespace NWN.Framework.Core.Messaging
             _globalErrorHandler = onError;
         }
 
-        /// <summary>
-        /// Publishes the <paramref name="message"/> on the <see cref="MessageHub"/>.
-        /// </summary>
-        /// <param name="message">The message to published</param>
-        public void Publish<T>(T message)
+        public void Publish(Type type, object message)
         {
             var localSubscriptions = _subscriptions.GetTheLatestSubscriptions();
-
-            var msgType = typeof(T);
-
 #if NET_STANDARD
             var msgTypeInfo = msgType.GetTypeInfo();
 #endif
-            _globalHandler?.Invoke(msgType, message);
+            _globalHandler?.Invoke(type, message);
 
             // ReSharper disable once ForCanBeConvertedToForeach | Performance Critical
             for (var idx = 0; idx < localSubscriptions.Count; idx++)
@@ -70,7 +63,7 @@ namespace NWN.Framework.Core.Messaging
 #if NET_STANDARD
                 if (!subscription.Type.GetTypeInfo().IsAssignableFrom(msgTypeInfo)) { continue; }
 #else
-                if (!subscription.Type.IsAssignableFrom(msgType)) { continue; }
+                if (!subscription.Type.IsAssignableFrom(type)) { continue; }
 #endif
                 try
                 {
@@ -81,6 +74,15 @@ namespace NWN.Framework.Core.Messaging
                     _globalErrorHandler?.Invoke(subscription.Token, e);
                 }
             }
+        }
+
+        /// <summary>
+        /// Publishes the <paramref name="message"/> on the <see cref="MessageHub"/>.
+        /// </summary>
+        /// <param name="message">The message to published</param>
+        public void Publish<T>(T message)
+        {
+            Publish(typeof(T), message);
         }
 
         /// <summary>

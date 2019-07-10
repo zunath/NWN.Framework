@@ -1,6 +1,8 @@
-﻿namespace NWN.Framework.Core.Event.Area
+﻿using System;
+
+namespace NWN.Framework.Core.Event.Area
 {
-    internal class OnAreaEnter
+    internal class OnAreaEnter: MarshalByRefObject
     {
     }
 }

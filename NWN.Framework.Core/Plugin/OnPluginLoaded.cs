@@ -1,6 +1,8 @@
-﻿namespace NWN.Framework.Core.Plugin
+﻿using System;
+
+namespace NWN.Framework.Core.Plugin
 {
-    public class OnPluginLoaded
+    public class OnPluginLoaded: MarshalByRefObject
     {
         public string DLLPath { get; set; }
 

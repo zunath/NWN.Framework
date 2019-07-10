@@ -21,7 +21,14 @@ namespace NWN.Framework.Core.Messaging
         {
             if (!CanHandle()) { return; }
 
-            ((Action<T>)Handler)(message);
+            // This is a bit of a hack to get around some type comparison issues between AppDomains.
+            // If you have a better way to do this, please fix it.
+            dynamic dynamicHandler = Handler;
+            dynamic dynamicMessage = message;
+            dynamicHandler(dynamicMessage);
+
+            // Original code here.
+            //((Action<T>)Handler)(message);
         }
 
         private bool CanHandle()

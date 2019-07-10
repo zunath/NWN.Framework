@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Security.Policy;
-using NWN.Framework.Core;
-using NWN.Framework.Core.Event.Area;
-using NWN.Framework.Core.Event.Creature;
-using NWN.Framework.Core.Event.Module;
 using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.Plugin;
-using NWN.Scripts;
 
 // ReSharper disable once CheckNamespace
 namespace SWLOR.Game.Core
@@ -37,6 +30,8 @@ namespace SWLOR.Game.Core
         public void Start()
         {
             Console.WriteLine("Plugin loader has started.");
+
+            MessageHub.Instance.RegisterGlobalHandler(SignalEvent);
 
             string fullPath = typeof(PluginLoader).Assembly.Location;
             string directory = Path.GetDirectoryName(fullPath);
@@ -133,15 +128,23 @@ namespace SWLOR.Game.Core
 
             IPlugin plugin = (IPlugin)domain.CreateInstanceAndUnwrap(assemblyName.FullName, assemblyName.Name + ".PluginRegistration");
             plugin.Register();
-            Console.WriteLine("Registered plugin: " + plugin.Name);
-
+            
             // Store the app domain in the dictionary. If the plugin file ever changes, 
             // we'll use this dictionary to reload it.
             var pluginRegistration = new PluginRegistration(domain, plugin);
-            SubscribePluginEvents(pluginRegistration);
+            //SubscribePluginEvents(pluginRegistration);
             _pluginAppDomains.Add(dllPath, pluginRegistration);
 
+            Console.WriteLine("Registered Plugin: " + plugin.Name);
             MessageHub.Instance.Publish(new OnPluginLoaded(dllPath));
+        }
+
+        private void SignalEvent(Type type, object payload)
+        {
+            foreach (var plugin in _pluginAppDomains)
+            {
+                plugin.Value.Plugin.SignalEvent(type, Convert.ChangeType(payload, type));
+            }
         }
 
         /// <summary>
@@ -152,105 +155,11 @@ namespace SWLOR.Game.Core
         {
             var pluginRegistration = _pluginAppDomains[dllPath];
             pluginRegistration.Plugin.Unregister();
-            Console.WriteLine("Unregistered plugin: " + pluginRegistration.Plugin.Name);
-
-            UnsubscribePluginEvents(pluginRegistration);
+            Console.WriteLine("Unregistered Plugin: " + pluginRegistration.Plugin.Name);
             AppDomain.Unload(pluginRegistration.AppDomain);
             _pluginAppDomains.Remove(dllPath);
 
             MessageHub.Instance.Publish(new OnPluginUnloaded(dllPath));
-        }
-
-        // Every plugin runs in its own app domain so that we can later unload it, if needed.
-        // The recommended way to transfer data between app domains is by inheriting MarshalByRefObject to the objects you want to transfer.
-        // As it turns out, Mono is totally incapable of marshalling objects like events and delegates so we're forced to use this awful workaround.
-        // You win again, Mono. You win again.
-
-        /// <summary>
-        /// Subscribes all events for a given plugin registration.
-        /// </summary>
-        /// <param name="registration"></param>
-        private void SubscribePluginEvents(PluginRegistration registration)
-        {
-            // Module events
-            registration.OnModuleAcquireItemID = MessageHub.Instance.Subscribe<OnModuleAcquireItem>(x => registration.Plugin.OnModuleAcquireItem());
-            registration.OnModuleActivateItemID = MessageHub.Instance.Subscribe<OnModuleActivateItem>(x => registration.Plugin.OnModuleActivateItem());
-            registration.OnModuleApplyDamageID = MessageHub.Instance.Subscribe<OnModuleApplyDamage>(x => registration.Plugin.OnModuleApplyDamage());
-            registration.OnModuleAttackID = MessageHub.Instance.Subscribe<OnModuleAttack>(x => registration.Plugin.OnModuleAttack());
-            registration.OnModuleChatID = MessageHub.Instance.Subscribe<OnModuleChat>(x => registration.Plugin.OnModuleChat());
-            registration.OnModuleCutsceneAbortID = MessageHub.Instance.Subscribe<OnModuleCutsceneAbort>(x => registration.Plugin.OnModuleCutsceneAbort());
-            registration.OnModuleDeathID = MessageHub.Instance.Subscribe<OnModuleDeath>(x => registration.Plugin.OnModuleDeath());
-            registration.OnModuleDyingID = MessageHub.Instance.Subscribe<OnModuleDying>(x => registration.Plugin.OnModuleDying());
-            registration.OnModuleEnterID = MessageHub.Instance.Subscribe<OnModuleEnter>(x => registration.Plugin.OnModuleEnter());
-            registration.OnModuleEquipItemID = MessageHub.Instance.Subscribe<OnModuleEquipItem>(x => registration.Plugin.OnModuleEquipItem());
-            registration.OnModuleExamineID = MessageHub.Instance.Subscribe<OnModuleExamine>(x => registration.Plugin.OnModuleExamine());
-            registration.OnModuleHeartbeatID = MessageHub.Instance.Subscribe<OnModuleHeartbeat>(x => registration.Plugin.OnModuleHeartbeat());
-            registration.OnModuleLeaveID = MessageHub.Instance.Subscribe<OnModuleLeave>(x => registration.Plugin.OnModuleLeave());
-            registration.OnModuleLevelUpID = MessageHub.Instance.Subscribe<OnModuleLevelUp>(x => registration.Plugin.OnModuleLevelUp());
-            registration.OnModuleLoadID = MessageHub.Instance.Subscribe<OnModuleLoad>(x => registration.Plugin.OnModuleLoad());
-            registration.OnModuleNWNXChatID = MessageHub.Instance.Subscribe<OnModuleNWNXChat>(x => registration.Plugin.OnModuleNWNXChat());
-            registration.OnModuleRespawnID = MessageHub.Instance.Subscribe<OnModuleRespawn>(x => registration.Plugin.OnModuleRespawn());
-            registration.OnModuleRestID = MessageHub.Instance.Subscribe<OnModuleRest>(x => registration.Plugin.OnModuleRest());
-            registration.OnModuleUnacquireItemID = MessageHub.Instance.Subscribe<OnModuleUnacquireItem>(x => registration.Plugin.OnModuleUnacquireItem());
-            registration.OnModuleUnequipItemID = MessageHub.Instance.Subscribe<OnModuleUnequipItem>(x => registration.Plugin.OnModuleUnequipItem());
-            registration.OnModuleUseFeatID = MessageHub.Instance.Subscribe<OnModuleUseFeat>(x => registration.Plugin.OnModuleUseFeat());
-            registration.OnModuleUserDefinedID = MessageHub.Instance.Subscribe<OnModuleUserDefined>(x => registration.Plugin.OnModuleUserDefined());
-
-            // Area Events
-            registration.OnAreaEnterID = MessageHub.Instance.Subscribe<OnAreaEnter>(x => registration.Plugin.OnAreaEnter());
-            registration.OnAreaExitID = MessageHub.Instance.Subscribe<OnAreaExit>(x => registration.Plugin.OnAreaExit());
-            registration.OnAreaHeartbeatID = MessageHub.Instance.Subscribe<OnAreaHeartbeat>(x => registration.Plugin.OnAreaHeartbeat());
-            registration.OnAreaUserDefinedID = MessageHub.Instance.Subscribe<OnAreaUserDefined>(x => registration.Plugin.OnAreaUserDefined());
-
-            // Creature Events
-            registration.OnCreatureBlockedID = MessageHub.Instance.Subscribe<OnCreatureBlocked>(x => registration.Plugin.OnCreatureBlocked());
-            registration.OnCreatureCombatRoundEndID = MessageHub.Instance.Subscribe<OnCreatureCombatRoundEnd>(x => registration.Plugin.OnCreatureCombatRoundEnd());
-            registration.OnCreatureConversationID = MessageHub.Instance.Subscribe<OnCreatureConversation>(x => registration.Plugin.OnCreatureConversation());
-            registration.OnCreatureDamagedID = MessageHub.Instance.Subscribe<OnCreatureDamaged>(x => registration.Plugin.OnCreatureDamaged());
-            registration.OnCreatureDeathID = MessageHub.Instance.Subscribe<OnCreatureDeath>(x => registration.Plugin.OnCreatureDeath());
-            registration.OnCreatureDisturbedID = MessageHub.Instance.Subscribe<OnCreatureDisturbed>(x => registration.Plugin.OnCreatureDisturbed());
-            registration.OnCreatureHeartbeatID = MessageHub.Instance.Subscribe<OnCreatureHeartbeat>(x => registration.Plugin.OnCreatureHeartbeat());
-            registration.OnCreaturePerceptionID = MessageHub.Instance.Subscribe<OnCreaturePerception>(x => registration.Plugin.OnCreaturePerception());
-            registration.OnCreaturePhysicalAttackedID = MessageHub.Instance.Subscribe<OnCreaturePhysicalAttacked>(x => registration.Plugin.OnCreaturePhysicalAttacked());
-            registration.OnCreatureRestedID = MessageHub.Instance.Subscribe<OnCreatureRested>(x => registration.Plugin.OnCreatureRested());
-            registration.OnCreatureSpawnID = MessageHub.Instance.Subscribe<OnCreatureSpawn>(x => registration.Plugin.OnCreatureSpawn());
-            registration.OnCreatureSpellCastAtID = MessageHub.Instance.Subscribe<OnCreatureSpellCastAt>(x => registration.Plugin.OnCreatureSpellCastAt());
-            registration.OnCreatureUserDefinedID = MessageHub.Instance.Subscribe<OnCreatureUserDefined>(x => registration.Plugin.OnCreatureUserDefined());
-        }
-
-        /// <summary>
-        /// Unsubscribes all events for a given plugin registration.
-        /// </summary>
-        /// <param name="registration"></param>
-        private void UnsubscribePluginEvents(PluginRegistration registration)
-        {
-            MessageHub.Instance.Unsubscribe(registration.OnModuleAcquireItemID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleActivateItemID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleApplyDamageID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleAttackID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleChatID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleCutsceneAbortID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleDeathID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleDyingID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleEnterID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleEquipItemID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleExamineID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleHeartbeatID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleLeaveID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleLevelUpID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleLoadID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleNWNXChatID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleRespawnID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleRestID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleUnacquireItemID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleUnequipItemID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleUseFeatID);
-            MessageHub.Instance.Unsubscribe(registration.OnModuleUserDefinedID);
-
-            MessageHub.Instance.Unsubscribe(registration.OnAreaEnterID);
-            MessageHub.Instance.Unsubscribe(registration.OnAreaExitID);
-            MessageHub.Instance.Unsubscribe(registration.OnAreaHeartbeatID);
-            MessageHub.Instance.Unsubscribe(registration.OnAreaUserDefinedID);
         }
 
     }

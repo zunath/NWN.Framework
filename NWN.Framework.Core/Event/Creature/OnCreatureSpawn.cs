@@ -1,8 +1,9 @@
-﻿using NWN.Framework.Core.GameObject;
+﻿using System;
+using NWN.Framework.Core.GameObject;
 
 namespace NWN.Framework.Core.Event.Creature
 {
-    public class OnCreatureSpawn
+    public class OnCreatureSpawn: MarshalByRefObject
     {
         public NWCreature Self { get; }
 

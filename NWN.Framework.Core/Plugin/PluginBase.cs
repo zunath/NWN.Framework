@@ -4,6 +4,8 @@ namespace NWN.Framework.Core.Plugin
 {
     public abstract class PluginBase: MarshalByRefObject, IPlugin
     {
+        public abstract string Name { get; }
+        public abstract string Description { get; }
         public abstract void Register();
         public abstract void Unregister();
 

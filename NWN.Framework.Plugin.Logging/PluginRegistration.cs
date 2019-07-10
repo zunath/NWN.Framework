@@ -7,14 +7,15 @@ namespace NWN.Framework.Plugin.Logging
 {
     public class PluginRegistration: PluginBase
     {
+        public override string Name => "Logging";
+        public override string Description => "General purpose logging tools.";
+
         public override void Register()
         {
-            Console.WriteLine("Registered Logging plugin a new version");
         }
 
         public override void Unregister()
         {
-            Console.WriteLine("Unregistered logging plugin a new version");
         }
 
     }

@@ -1,27 +1,21 @@
 ﻿using System;
+using NWN.Framework.Core;
 using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.Plugin;
 
 namespace NWN.Framework.Plugin.Logging
 {
-    public class PluginRegistration: IPlugin
+    public class PluginRegistration: PluginBase
     {
-        public void Register()
+        public override void Register()
         {
             Console.WriteLine("Registered Logging plugin a new version");
         }
 
-        public void Unregister()
+        public override void Unregister()
         {
             Console.WriteLine("Unregistered logging plugin a new version");
         }
 
-        public void SubscribeEvents(IMessageHub messageHub)
-        {
-        }
-
-        public void UnsubscribeEvents(IMessageHub messageHub)
-        {
-        }
     }
 }

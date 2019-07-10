@@ -180,6 +180,7 @@
     <Compile Include="Plugin\IPlugin.cs" />
     <Compile Include="Plugin\OnPluginLoaded.cs" />
     <Compile Include="Plugin\OnPluginUnloaded.cs" />
+    <Compile Include="Plugin\PluginBase.cs" />
     <Compile Include="Plugin\PluginLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

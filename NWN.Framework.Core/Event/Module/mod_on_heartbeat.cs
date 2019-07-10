@@ -12,6 +12,8 @@ namespace NWN.Scripts
         // ReSharper disable once UnusedMember.Local
         private static void Main()
         {
+            Hub.Instance.Publish(new OnModuleHeartbeat());
+
             MessageHub.Instance.Publish(new OnModuleHeartbeat());
         }
 

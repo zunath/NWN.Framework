@@ -1,4 +1,5 @@
 ﻿using System;
+using NWN.Framework.Core.Messaging;
 
 namespace NWN.Framework.Core.Plugin
 {
@@ -6,7 +7,7 @@ namespace NWN.Framework.Core.Plugin
     {
         public abstract string Name { get; }
         public abstract string Description { get; }
-        public abstract void Register();
+        public abstract void Register(Hub hub);
         public abstract void Unregister();
 
         public virtual void OnModuleAcquireItem() { }

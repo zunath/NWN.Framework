@@ -10,7 +10,7 @@ namespace NWN.Framework.Plugin.Logging
         public override string Name => "Logging";
         public override string Description => "General purpose logging tools.";
 
-        public override void Register()
+        public override void Register(Hub hub)
         {
         }
 

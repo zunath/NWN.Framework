@@ -1,0 +1,27 @@
+version: "2.2"
+
+services:
+    redis:
+        hostname: redis
+        image: healthcheck/redis:latest
+        command: ["redis-server", "--appendonly", "no"]
+        volumes:
+            - ${PWD-.}/redis:/data
+        
+
+    nwn-framework:
+        hostname: nwnxee-server
+        image: nwnxee/unified:latest-full
+        env_file: ${PWD-.}/config/nwserver.env
+        stdin_open: true
+        tty: true
+        links:
+            - "redis:redis"
+        depends_on:
+            - redis
+        volumes:
+            - ${PWD-.}/logs:/nwn/run/logs.0
+            - ${PWD-.}/server/:/nwn/home
+            - ${PWD-.}/logs:/nwn/data/bin/linux-x86/logs.0
+        ports:
+            - "5121:5121/udp"

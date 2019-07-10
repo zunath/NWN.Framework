@@ -1,10 +1,12 @@
-﻿namespace NWN.Framework.Core.Plugin
+﻿using NWN.Framework.Core.Messaging;
+
+namespace NWN.Framework.Core.Plugin
 {
     public interface IPlugin
     {
         string Name { get; }
         string Description { get; }
-        void Register();
+        void Register(Hub hub);
         void Unregister();
 
         void OnModuleAcquireItem();

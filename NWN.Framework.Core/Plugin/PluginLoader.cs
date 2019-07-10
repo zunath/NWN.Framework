@@ -39,6 +39,8 @@ namespace SWLOR.Game.Core
             Console.WriteLine("Plugin loader has started.");
 
             string fullPath = typeof(PluginLoader).Assembly.Location;
+
+            Console.WriteLine("getting directory name of " + fullPath);
             string directory = Path.GetDirectoryName(fullPath);
 
             if (directory == null)
@@ -112,11 +114,15 @@ namespace SWLOR.Game.Core
         /// <param name="dllPath">Path to the DLL.</param>
         private void LoadPlugin(string dllPath)
         {
+            Console.WriteLine("loading plugin: " + dllPath);
             string fileName = Path.GetFileName(dllPath);
             var assemblyName = AssemblyName.GetAssemblyName(dllPath);
+
+            Console.WriteLine("getting assembly path");
             string monoAssemblyPath = Environment.GetEnvironmentVariable("NWNX_MONO_ASSEMBLY");
             AppDomain domain;
 
+            Console.WriteLine("got assembly path");
             // There won't be a mono assembly if the testing app is being run. Use whatever runs by default on Windows.
             if (string.IsNullOrWhiteSpace(monoAssemblyPath))
             {
@@ -130,9 +136,10 @@ namespace SWLOR.Game.Core
                     ApplicationBase = Path.GetDirectoryName(monoAssemblyPath)
                 });
             }
-
+            
+            Console.WriteLine("creating plugin instance");
             IPlugin plugin = (IPlugin)domain.CreateInstanceAndUnwrap(assemblyName.FullName, assemblyName.Name + ".PluginRegistration");
-            plugin.Register();
+            plugin.Register(Hub.Instance);
             Console.WriteLine("Registered plugin: " + plugin.Name);
 
             // Store the app domain in the dictionary. If the plugin file ever changes, 

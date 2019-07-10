@@ -1,4 +1,5 @@
-﻿using NWN.Framework.Core.Event;
+﻿using NWN.Framework.Core.Caching;
+using NWN.Framework.Core.Event;
 using NWN.Framework.Core.Event.Module;
 using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.NWNX;
@@ -17,6 +18,7 @@ namespace NWN.Scripts
         private static void Main()
         {
             _pluginLoader.Start();
+            Cache.Instance.Initialize();
 
             SetModuleEventScripts();
             SetAreaEventScripts();

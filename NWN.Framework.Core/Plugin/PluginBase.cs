@@ -1,4 +1,5 @@
 ﻿using System;
+using NWN.Framework.Core.Event.Cache;
 using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.Plugin.Contracts;
 using NWN.Framework.Core.Providers.Contracts;
@@ -11,6 +12,13 @@ namespace NWN.Framework.Core.Plugin
         public abstract string Description { get; }
         public abstract void Register();
         public abstract void Unregister();
+        public abstract void SubscribeEvents();
+        public abstract void UnsubscribeEvents();
+
+        protected PluginBase()
+        {
+            MessageHub.Instance.Subscribe<OnCacheProviderChanged>(CacheProviderChanged);
+        }
 
         /// <summary>
         /// Every plugin runs on its own AppDomain with its own MessageHub.
@@ -25,5 +33,13 @@ namespace NWN.Framework.Core.Plugin
         }
 
         public IMessageHub PluginMessageHub => MessageHub.Instance;
+
+        protected ICacheProvider Cache { get; private set; }
+
+        private void CacheProviderChanged(OnCacheProviderChanged obj)
+        {
+            Cache = obj.CacheProvider;
+        }
+
     }
 }

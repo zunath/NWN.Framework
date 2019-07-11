@@ -1,6 +1,5 @@
 ﻿using System;
 using NWN.Framework.Core.Messaging;
-using NWN.Framework.Core.Providers.Contracts;
 
 namespace NWN.Framework.Core.Plugin.Contracts
 {
@@ -10,6 +9,8 @@ namespace NWN.Framework.Core.Plugin.Contracts
         string Description { get; }
         void Register();
         void Unregister();
+        void SubscribeEvents();
+        void UnsubscribeEvents();
         void SignalEvent(Type type, object payload);
         IMessageHub PluginMessageHub { get; }
     }

@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NWN.Framework.Core.Event;
-using NWN.Framework.Core.Event.Cache;
 using NWN.Framework.Core.Event.Plugin;
 using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.Plugin;
 using NWN.Framework.Core.Plugin.Contracts;
-using NWN.Framework.Core.Providers;
-using NWN.Framework.Core.Providers.Contracts;
 
 // ReSharper disable once CheckNamespace
 namespace SWLOR.Game.Core
@@ -152,6 +149,8 @@ namespace SWLOR.Game.Core
 
             Console.WriteLine("Registered Plugin: " + plugin.Name);
             MessageHub.Instance.Publish(new OnPluginLoaded(dllPath));
+
+            plugin.SubscribeEvents();
         }
 
         /// <summary>
@@ -194,6 +193,7 @@ namespace SWLOR.Game.Core
         private void UnloadPlugin(string dllPath)
         {
             var pluginRegistration = _pluginAppDomains[dllPath];
+            pluginRegistration.Plugin.UnsubscribeEvents();
             pluginRegistration.Plugin.Unregister();
             Console.WriteLine("Unregistered Plugin: " + pluginRegistration.Plugin.Name);
             AppDomain.Unload(pluginRegistration.AppDomain);

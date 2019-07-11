@@ -42,7 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Event\Cache\OnApplicationCacheLoaded.cs" />
+    <Compile Include="AppCache.cs" />
+    <Compile Include="Event\Cache\OnCacheProviderChanged.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="Event\Area\area_on_enter.cs" />
     <Compile Include="Event\Area\area_on_exit.cs" />
@@ -189,7 +190,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\Contracts\ICacheProvider.cs" />
     <Compile Include="Providers\InMemoryCacheProvider.cs" />
-    <Compile Include="Event\Cache\OnChangeApplicationCacheProvider.cs" />
+    <Compile Include="Event\Cache\OnCacheProviderChanging.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

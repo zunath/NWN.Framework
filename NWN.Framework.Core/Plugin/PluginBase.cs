@@ -1,5 +1,7 @@
 ﻿using System;
 using NWN.Framework.Core.Messaging;
+using NWN.Framework.Core.Plugin.Contracts;
+using NWN.Framework.Core.Providers.Contracts;
 
 namespace NWN.Framework.Core.Plugin
 {
@@ -21,5 +23,7 @@ namespace NWN.Framework.Core.Plugin
         {
             MessageHub.Instance.Publish(type, payload);
         }
+
+        public IMessageHub PluginMessageHub => MessageHub.Instance;
     }
 }

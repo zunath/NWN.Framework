@@ -3,7 +3,7 @@ using NWN.Framework.Core.GameObject;
 
 namespace NWN.Framework.Core.Event.Creature
 {
-    public class OnCreatureSpawn: MarshalByRefObject
+    public class OnCreatureSpawn: EventBase
     {
         public NWCreature Self { get; }
 

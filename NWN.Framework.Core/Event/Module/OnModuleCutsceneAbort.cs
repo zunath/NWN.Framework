@@ -2,7 +2,7 @@
 
 namespace NWN.Framework.Core.Event.Module
 {
-    public class OnModuleCutsceneAbort: MarshalByRefObject
+    public class OnModuleCutsceneAbort: EventBase
     {
     }
 }

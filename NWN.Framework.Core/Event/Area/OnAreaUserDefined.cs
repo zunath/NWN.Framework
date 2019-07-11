@@ -2,7 +2,7 @@
 
 namespace NWN.Framework.Core.Event.Area
 {
-    internal class OnAreaUserDefined: MarshalByRefObject
+    internal class OnAreaUserDefined: EventBase
     {
     }
 }

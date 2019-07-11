@@ -2,7 +2,7 @@
 
 namespace NWN.Framework.Core.Event.Creature
 {
-    internal class OnCreatureBlocked: MarshalByRefObject
+    internal class OnCreatureBlocked: EventBase
     {
     }
 }

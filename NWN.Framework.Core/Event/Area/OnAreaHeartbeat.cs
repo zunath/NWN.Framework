@@ -2,7 +2,7 @@
 
 namespace NWN.Framework.Core.Event.Area
 {
-    internal class OnAreaHeartbeat: MarshalByRefObject
+    internal class OnAreaHeartbeat: EventBase
     {
     }
 }

@@ -2,7 +2,7 @@
 
 namespace NWN.Framework.Core.Event.Creature
 {
-    public class OnCreatureUserDefined: MarshalByRefObject
+    public class OnCreatureUserDefined: EventBase
     {
     }
 }

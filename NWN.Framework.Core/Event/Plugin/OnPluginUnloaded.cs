@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace NWN.Framework.Core.Plugin
+namespace NWN.Framework.Core.Event.Plugin
 {
-    public class OnPluginUnloaded: MarshalByRefObject
+    public class OnPluginUnloaded: EventBase
     {
         public string DLLPath { get; set; }
 

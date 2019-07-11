@@ -2,8 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using NWN.Framework.Core.Event;
+using NWN.Framework.Core.Event.Cache;
+using NWN.Framework.Core.Event.Plugin;
 using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.Plugin;
+using NWN.Framework.Core.Plugin.Contracts;
+using NWN.Framework.Core.Providers;
+using NWN.Framework.Core.Providers.Contracts;
 
 // ReSharper disable once CheckNamespace
 namespace SWLOR.Game.Core
@@ -16,7 +22,7 @@ namespace SWLOR.Game.Core
         /// <summary>
         /// Tracks the active plugin registrations.
         /// </summary>
-        private readonly Dictionary<string, PluginRegistration> _pluginAppDomains = new Dictionary<string, PluginRegistration>();
+        private readonly Dictionary<string, RegisteredPlugin> _pluginAppDomains = new Dictionary<string, RegisteredPlugin>();
 
         /// <summary>
         /// Notifies whenever a plugin is added, removed, or changed in the executing directory.
@@ -126,25 +132,59 @@ namespace SWLOR.Game.Core
                 });
             }
 
+            // Create a proxy instance of the plugin registration. 
             IPlugin plugin = (IPlugin)domain.CreateInstanceAndUnwrap(assemblyName.FullName, assemblyName.Name + ".PluginRegistration");
+
+            // Subscribe to all events raised by the plugin.
+            if (plugin.PluginMessageHub == null)
+            {
+                throw new NullReferenceException("Plugins may not have null MessageHub references.");
+            }
+            plugin.PluginMessageHub.RegisterGlobalHandler(ReceivePluginEvent);
+
+            // Run registration code. This is the plugin-specific set-up process.
             plugin.Register();
             
             // Store the app domain in the dictionary. If the plugin file ever changes, 
             // we'll use this dictionary to reload it.
-            var pluginRegistration = new PluginRegistration(domain, plugin);
-            //SubscribePluginEvents(pluginRegistration);
+            var pluginRegistration = new RegisteredPlugin(domain, plugin);
             _pluginAppDomains.Add(dllPath, pluginRegistration);
 
             Console.WriteLine("Registered Plugin: " + plugin.Name);
             MessageHub.Instance.Publish(new OnPluginLoaded(dllPath));
         }
 
+        /// <summary>
+        /// Any time an event is raised in the host AppDomain, notify each plugin so they can act upon it, if necessary.
+        /// </summary>
+        /// <param name="type">The type of event raised.</param>
+        /// <param name="payload">The data passed by this event.</param>
         private void SignalEvent(Type type, object payload)
         {
+            // We add this check to prevent infinite loops between host and plugin.
+            // Without it, the following signal would cause the child to publish another event.
+            // We only need to notify plugins about host events, not other plugin events, so bail out early if one is found.
+            var originatingDomain = ((EventBase) payload).OriginatingAppDomain;
+            if (originatingDomain != AppDomain.CurrentDomain) return;
+
             foreach (var plugin in _pluginAppDomains)
             {
                 plugin.Value.Plugin.SignalEvent(type, Convert.ChangeType(payload, type));
             }
+        }
+
+        /// <summary>
+        /// Any time a plugin raises an event, we also need to notify our hosting app of the change.
+        /// </summary>
+        private void ReceivePluginEvent(Type type, object payload)
+        {
+            // We add this check to prevent infinite loops between host and plugin.
+            // Without it, the following publish would cause the host to publish another event to the children plugins.
+            // We only need to notify the host about plugin events, not any others, so bail out early if one is found.
+            var originatingDomain = ((EventBase) payload).OriginatingAppDomain;
+            if (originatingDomain == AppDomain.CurrentDomain) return;
+
+            MessageHub.Instance.Publish(type, payload);
         }
 
         /// <summary>

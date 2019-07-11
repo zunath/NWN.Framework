@@ -1,7 +1,9 @@
-﻿using NWN.Framework.Core.Event;
+﻿using NWN.Framework.Core;
+using NWN.Framework.Core.Event;
 using NWN.Framework.Core.Event.Module;
 using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.NWNX;
+using NWN.Framework.Core.Providers;
 using SWLOR.Game.Core;
 
 // ReSharper disable once CheckNamespace
@@ -12,10 +14,12 @@ namespace NWN.Scripts
 #pragma warning restore IDE1006 // Naming Styles
     {
         private static readonly PluginLoader _pluginLoader = new PluginLoader();
+        private static readonly Application App = new Application();
 
         // ReSharper disable once UnusedMember.Local
         private static void Main()
         {
+            App.Initialize();
             _pluginLoader.Start();
 
             SetModuleEventScripts();

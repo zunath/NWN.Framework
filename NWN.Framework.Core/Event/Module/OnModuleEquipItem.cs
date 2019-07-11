@@ -2,7 +2,7 @@
 
 namespace NWN.Framework.Core.Event.Module
 {
-    public class OnModuleEquipItem: MarshalByRefObject
+    public class OnModuleEquipItem: EventBase
     {
 
     }

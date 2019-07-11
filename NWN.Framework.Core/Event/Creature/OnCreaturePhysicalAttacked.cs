@@ -2,7 +2,7 @@
 
 namespace NWN.Framework.Core.Event.Creature
 {
-    public class OnCreaturePhysicalAttacked: MarshalByRefObject
+    public class OnCreaturePhysicalAttacked: EventBase
     {
     }
 }

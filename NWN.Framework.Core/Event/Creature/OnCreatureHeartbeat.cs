@@ -2,7 +2,7 @@
 
 namespace NWN.Framework.Core.Event.Creature
 {
-    public class OnCreatureHeartbeat: MarshalByRefObject
+    public class OnCreatureHeartbeat: EventBase
     {
     }
 }

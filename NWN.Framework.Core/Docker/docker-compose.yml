@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+    redis:
+        image: redis:latest
+        command: ["redis-server", "--appendonly", "no"]
+        ports: 
+            - "6379:6379"
+        volumes:
+            - ${PWD-.}/redis:/data
+        network_mode: "host"
+
+    nwn-framework:
+        image: nwnxee/unified:latest-full
+        env_file: ${PWD-.}/nwserver.env
+        stdin_open: true
+        tty: true
+        depends_on:
+            - redis
+        volumes:
+            - ${PWD-.}/logs:/nwn/run/logs.0
+            - ${PWD-.}/:/nwn/home
+            - ${PWD-.}/logs:/nwn/data/bin/linux-x86/logs.0
+        ports:
+            - "5121:5121/udp"
+        network_mode: "host"

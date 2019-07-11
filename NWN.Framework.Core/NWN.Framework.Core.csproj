@@ -192,7 +192,10 @@
     <Compile Include="Providers\InMemoryCacheProvider.cs" />
     <Compile Include="Event\Cache\OnCacheProviderChanging.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Docker\docker-compose.yml" />
+    <None Include="Docker\nwserver.env" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)NWN.Framework.Core.dll" "$(TargetDir)..\..\..\bin\" /E /Y /C /i

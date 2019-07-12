@@ -42,6 +42,7 @@ namespace NWN.Framework.Plugin.Redis
             {
                 Console.WriteLine("Unable to connect to Redis cache. Exception details: " + ex);
                 NWNXAdmin.ShutdownServer();
+                throw;
             }
         }
 

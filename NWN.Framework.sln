@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NWN.Framework.Core", "NWN.F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NWN.Framework.Plugin.Redis", "NWN.Framework.Plugin.Redis\NWN.Framework.Plugin.Redis.csproj", "{4CD7E280-0975-42B8-AB7F-8C3068622E63}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NWN.Framework.Testing", "NWN.Framework.Testing\NWN.Framework.Testing.csproj", "{A80334E9-9355-4A4E-9811-B42FD4840C70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4CD7E280-0975-42B8-AB7F-8C3068622E63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CD7E280-0975-42B8-AB7F-8C3068622E63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CD7E280-0975-42B8-AB7F-8C3068622E63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A80334E9-9355-4A4E-9811-B42FD4840C70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A80334E9-9355-4A4E-9811-B42FD4840C70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A80334E9-9355-4A4E-9811-B42FD4840C70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A80334E9-9355-4A4E-9811-B42FD4840C70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

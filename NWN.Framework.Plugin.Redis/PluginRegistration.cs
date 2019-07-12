@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using NWN.Framework.Core.Event.Cache;
-using NWN.Framework.Core.Event.Module;
+using NWN.Framework.Core.GameObject;
 using NWN.Framework.Core.Messaging;
 using NWN.Framework.Core.Plugin;
-using NWN.Framework.Core.Providers.Contracts;
 
 namespace NWN.Framework.Plugin.Redis
 {
@@ -18,14 +15,24 @@ namespace NWN.Framework.Plugin.Redis
         {
             MessageHub.Instance.Publish(new OnCacheProviderChanging(new RedisCacheProvider()));
 
+
         }
 
         public override void Unregister()
         {
+            MessageHub.Instance.Publish(new OnRemoveCustomCacheProvider());
         }
 
         public override void SubscribeEvents()
         {
+            if (NWModule.Get().GetLocalInt("LOADED") == 1) return;
+
+            Cache.Set(Guid.NewGuid(), "value 1");
+            Cache.Set(Guid.NewGuid(), "value 2");
+            Cache.Set(Guid.NewGuid(), "value 3");
+            Cache.Set(Guid.NewGuid(), "value 4");
+
+            NWModule.Get().SetLocalInt("LOADED", 1);
         }
 
         public override void UnsubscribeEvents()

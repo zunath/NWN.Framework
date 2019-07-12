@@ -21,6 +21,7 @@ namespace NWN.Framework.Core
                 // The cache provider hasn't actually changed, but the newly loaded plugin needs to receive it.
                 MessageHub.Instance.Publish(new OnCacheProviderChanged(Cache));
             });
+            MessageHub.Instance.Subscribe<OnRemoveCustomCacheProvider>(x => RemoveCustomCacheProvider());
 
             ChangeCacheProvider(new InMemoryCacheProvider(), false);
         }
@@ -42,6 +43,29 @@ namespace NWN.Framework.Core
 
             Console.WriteLine("Cache provider changed to: " + provider.GetType().FullName);
             MessageHub.Instance.Publish(new OnCacheProviderChanged(provider));
+        }
+
+        private void RemoveCustomCacheProvider()
+        {
+            Console.WriteLine("Getting all keys");
+            var allData = Cache.GetAllKeys();
+
+            Console.WriteLine("making new cache");
+            Cache = new InMemoryCacheProvider();
+
+            Console.WriteLine("Initializing new cache");
+            Cache.Initialize();
+            _loadedExternalCache = false;
+
+            Console.WriteLine("Swapping back to standard in-memory cache. There might be some lag while the data is copied over.");
+
+            foreach (var data in allData)
+            {
+                Console.WriteLine("Setting key = " + data.Key + ", value = " + data.Value);
+                Cache.Set(data.Key, data.Value);
+            }
+
+            MessageHub.Instance.Publish(new OnCacheProviderChanged(Cache));
         }
     }
 }

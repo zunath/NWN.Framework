@@ -98,7 +98,7 @@ namespace SWLOR.Game.Core
             };
             _watcher.Error += (sender, args) =>
             {
-                Console.WriteLine("ERROR: " + args.GetException().Message);
+                Console.WriteLine("FILE WATCHER ERROR: " + args.GetException().Message);
             };
 
             _watcher.EnableRaisingEvents = true;
@@ -195,6 +195,7 @@ namespace SWLOR.Game.Core
             var pluginRegistration = _pluginAppDomains[dllPath];
             pluginRegistration.Plugin.UnsubscribeEvents();
             pluginRegistration.Plugin.Unregister();
+
             Console.WriteLine("Unregistered Plugin: " + pluginRegistration.Plugin.Name);
             AppDomain.Unload(pluginRegistration.AppDomain);
             _pluginAppDomains.Remove(dllPath);

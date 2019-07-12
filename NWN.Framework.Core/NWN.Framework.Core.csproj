@@ -53,6 +53,7 @@
     <Compile Include="Event\Area\OnAreaExit.cs" />
     <Compile Include="Event\Area\OnAreaHeartbeat.cs" />
     <Compile Include="Event\Area\OnAreaUserDefined.cs" />
+    <Compile Include="Event\Cache\OnRemoveCustomCacheProvider.cs" />
     <Compile Include="Event\Creature\crea_on_attacked.cs" />
     <Compile Include="Event\Creature\crea_on_blocked.cs" />
     <Compile Include="Event\Creature\crea_on_convo.cs" />

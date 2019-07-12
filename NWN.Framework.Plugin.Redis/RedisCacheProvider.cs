@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using NWN.Framework.Core.NWNX;
 using NWN.Framework.Core.Providers.Contracts;
@@ -56,6 +57,37 @@ namespace NWN.Framework.Plugin.Redis
         {
             string json = JsonConvert.SerializeObject(obj);
             Connection.GetDatabase().StringSet(key.ToString(), json);
+        }
+
+        public IEnumerable<KeyValuePair<Guid, object>> GetAllKeys()
+        {
+            Console.WriteLine("getting env ip");
+            string ip = Environment.GetEnvironmentVariable("NWN_FRAMEWORK_REDIS_IP");
+
+            Console.WriteLine("getting env port");
+            string port = Environment.GetEnvironmentVariable("NWN_FRAMEWORK_REDIS_PORT");
+
+            Console.WriteLine("ip = " + ip + ", port = " + port);
+
+            List<KeyValuePair<Guid, object>> results = new List<KeyValuePair<Guid, object>>();
+            Console.WriteLine("getting server keys");
+
+            string uri = ip + ":" + port;
+            var keys = Connection.GetServer(uri).Keys();
+            foreach (var key in keys)
+            {
+                Console.WriteLine("converting guid");
+                var guid = new Guid(key.ToString());
+                Console.WriteLine("getting json value for ID: " + guid);
+                var json = Connection.GetDatabase().StringGet(key);
+                Console.WriteLine("got json: " + json);
+                var deserialized = JsonConvert.DeserializeObject<object>(json);
+                Console.WriteLine("deserialized: " + deserialized.GetType().FullName);
+                results.Add(new KeyValuePair<Guid, object>(guid, deserialized));
+                Console.WriteLine("added to results");
+            }
+
+            return results;
         }
     }
 }
